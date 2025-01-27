@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Reputation Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: #00ff00;
+            text-align: center;
+            padding: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+        button {
+            background: #1f1f1f;
+            color: #00ff00;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #333;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>IP Reputation Checker</h1>
+    <input type="text" id="ipInput" placeholder="Enter IP Address">
+    <button onclick="checkIP()">Check</button>
+    <div class="result" id="result"></div>
+    <script>
+        async function checkIP() {
+            const ip = document.getElementById("ipInput").value.trim();
+            const resultDiv = document.getElementById("result");
+
+            if (!ip) {
+                resultDiv.innerHTML = "<p>Please enter a valid IP address.</p>";
+                return;
+            }
+
+            resultDiv.innerHTML = "<p>Checking...</p>";
+
+            try {
+                // Call AbuseIPDB API
+                const abuseResponse = await fetch(`/api/abuseipdb?ip=${ip}`);
+                const abuseData = await abuseResponse.json();
+
+                // Call VirusTotal API
+                const virusResponse = await fetch(`/api/virustotal?ip=${ip}`);
+                const virusData = await virusResponse.json();
+
+                // Call Geo-IP API
+                const geoResponse = await fetch(`/api/geoip?ip=${ip}`);
+                const geoData = await geoResponse.json();
+
+                // Display results
+                resultDiv.innerHTML = `
+                    <h3>Results for IP: ${ip}</h3>
+                    <h4>AbuseIPDB</h4>
+                    <p>Abuse Confidence Score: ${abuseData.data?.abuseConfidenceScore || "N/A"}</p>
+                    <p>Categories: ${abuseData.data?.category?.join(", ") || "N/A"}</p>
+                    <h4>VirusTotal</h4>
+                    <p>Reputation: ${virusData.data?.attributes?.reputation || "N/A"}</p>
+                    <p>Last Analysis Stats: ${
+                        virusData.data?.attributes?.last_analysis_stats
+                            ? JSON.stringify(virusData.data.attributes.last_analysis_stats)
+                            : "N/A"
+                    }</p>
+                    <h4>Geo-IP Information</h4>
+                    <p>ISP: ${geoData.isp || "N/A"}</p>
+                    <p>Usage Type: ${geoData.org || "N/A"}</p>
+                    <p>Hostname: ${geoData.reverse || "N/A"}</p>
+                    <p>Domain: ${geoData.as || "N/A"}</p>
+                    <p>Country: ${geoData.country || "N/A"}</p>
+                    <p>City: ${geoData.city || "N/A"}</p>
+                `;
+            } catch (error) {
+                console.error(error);
+                resultDiv.innerHTML = "<p>Error fetching data. Please try again.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
