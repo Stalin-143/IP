@@ -53,38 +53,35 @@
             resultDiv.innerHTML = "<p>Checking...</p>";
 
             try {
-                // Call AbuseIPDB API
+                // Fetch AbuseIPDB Data
                 const abuseResponse = await fetch(`/api/abuseipdb?ip=${ip}`);
                 const abuseData = await abuseResponse.json();
 
-                // Call VirusTotal API
+                // Fetch VirusTotal Data
                 const virusResponse = await fetch(`/api/virustotal?ip=${ip}`);
                 const virusData = await virusResponse.json();
 
-                // Call Geo-IP API
-                const geoResponse = await fetch(`/api/geoip?ip=${ip}`);
-                const geoData = await geoResponse.json();
-
-                // Display results
+                // Display Results
                 resultDiv.innerHTML = `
                     <h3>Results for IP: ${ip}</h3>
+
                     <h4>AbuseIPDB</h4>
-                    <p>Abuse Confidence Score: ${abuseData.data?.abuseConfidenceScore || "N/A"}</p>
-                    <p>Categories: ${abuseData.data?.category?.join(", ") || "N/A"}</p>
+                    <p><b>Abuse Confidence Score:</b> ${abuseData.data?.abuseConfidenceScore || "N/A"}</p>
+                    <p><b>Categories:</b> ${abuseData.data?.category?.join(", ") || "N/A"}</p>
+                    <p><b>Country:</b> ${abuseData.data?.countryCode || "N/A"}</p>
+                    <p><b>ISP:</b> ${abuseData.data?.isp || "N/A"}</p>
+                    <p><b>Domain:</b> ${abuseData.data?.domain || "N/A"}</p>
+
                     <h4>VirusTotal</h4>
-                    <p>Reputation: ${virusData.data?.attributes?.reputation || "N/A"}</p>
-                    <p>Last Analysis Stats: ${
+                    <p><b>Reputation:</b> ${virusData.data?.attributes?.reputation || "N/A"}</p>
+                    <p><b>Network:</b> ${virusData.data?.attributes?.network || "N/A"}</p>
+                    <p><b>Last Analysis Stats:</b> ${
                         virusData.data?.attributes?.last_analysis_stats
                             ? JSON.stringify(virusData.data.attributes.last_analysis_stats)
                             : "N/A"
                     }</p>
-                    <h4>Geo-IP Information</h4>
-                    <p>ISP: ${geoData.isp || "N/A"}</p>
-                    <p>Usage Type: ${geoData.org || "N/A"}</p>
-                    <p>Hostname: ${geoData.reverse || "N/A"}</p>
-                    <p>Domain: ${geoData.as || "N/A"}</p>
-                    <p>Country: ${geoData.country || "N/A"}</p>
-                    <p>City: ${geoData.city || "N/A"}</p>
+                    <p><b>Tags:</b> ${virusData.data?.attributes?.tags?.join(", ") || "N/A"}</p>
+                    <p><b>Whois:</b> ${virusData.data?.attributes?.whois || "N/A"}</p>
                 `;
             } catch (error) {
                 console.error(error);
