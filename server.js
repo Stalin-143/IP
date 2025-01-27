@@ -33,7 +33,7 @@ app.get("/api/abuseipdb", async (req, res) => {
 // VirusTotal API Route
 app.get("/api/virustotal", async (req, res) => {
     const { ip } = req.query;
-    const virusKey = "YOUR_VIRUSTOTAL_API_KEY"; // Replace with your VirusTotal API key
+    const virusKey = "YOUR_VIRUSTOTAL_API_KEY";
 
     if (!ip) {
         return res.status(400).json({ error: "IP address is required." });
