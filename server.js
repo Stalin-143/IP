@@ -4,7 +4,7 @@ const path = require("path");
 const app = express();
 const PORT = 3000;
 
-// Serve static files from the 'public' folder
+// Serve static files
 app.use(express.static(path.join(__dirname, "public")));
 
 // AbuseIPDB API Route
@@ -49,23 +49,6 @@ app.get("/api/virustotal", async (req, res) => {
         res.json(data);
     } catch (error) {
         res.status(500).json({ error: "Error fetching data from VirusTotal", details: error.message });
-    }
-});
-
-// IP-API Route for Geo-IP Information
-app.get("/api/geoip", async (req, res) => {
-    const { ip } = req.query;
-
-    if (!ip) {
-        return res.status(400).json({ error: "IP address is required." });
-    }
-
-    try {
-        const response = await fetch(`http://ip-api.com/json/${ip}`);
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: "Error fetching Geo-IP data", details: error.message });
     }
 });
 
