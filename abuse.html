@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IP Reputation Checker - AbuseIPDB</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #121212;
+            color: #00ff00;
+            text-align: center;
+            padding: 20px;
+        }
+        input, button {
+            padding: 10px;
+            margin: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: none;
+            outline: none;
+        }
+        button {
+            background: #1f1f1f;
+            color: #00ff00;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #333;
+        }
+        .result {
+            margin-top: 20px;
+            text-align: left;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h1>IP Reputation Checker - AbuseIPDB</h1>
+    <input type="text" id="ipInput" placeholder="Enter IP Address">
+    <button onclick="checkAbuseIPDB()">Check AbuseIPDB</button>
+    <div class="result" id="result"></div>
+
+    <script>
+        async function checkAbuseIPDB() {
+            const ip = document.getElementById("ipInput").value.trim();
+            const resultDiv = document.getElementById("result");
+
+            if (!ip) {
+                resultDiv.innerHTML = "<p>Please enter a valid IP address.</p>";
+                return;
+            }
+
+            resultDiv.innerHTML = "<p>Checking AbuseIPDB...</p>";
+
+            try {
+                const abuseResponse = await fetch(`/api/abuseipdb?ip=${ip}`);
+                const abuseData = await abuseResponse.json();
+
+                resultDiv.innerHTML = `
+                    <h3>Results for IP: ${ip}</h3>
+                    <h4>AbuseIPDB</h4>
+                    <p><b>Abuse Confidence Score:</b> ${abuseData.data?.abuseConfidenceScore || "N/A"}</p>
+                    <p><b>Categories:</b> ${abuseData.data?.category?.join(", ") || "N/A"}</p>
+                    <p><b>Country:</b> ${abuseData.data?.countryCode || "N/A"}</p>
+                    <p><b>ISP:</b> ${abuseData.data?.isp || "N/A"}</p>
+                    <p><b>Domain:</b> ${abuseData.data?.domain || "N/A"}</p>
+                `;
+            } catch (error) {
+                console.error(error);
+                resultDiv.innerHTML = "<p>Error fetching data from AbuseIPDB.</p>";
+            }
+        }
+    </script>
+</body>
+</html>
