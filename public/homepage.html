@@ -100,10 +100,10 @@
         </div>
 
         <div class="links-container">
-            <a href="error.html" class="link">AbuseIPDB</a>
-            <a href="error.html" class="link">VirusTotal</a>
-            <a href="error.html" class="link">AbuseIPDB & VirusTotal</a>
-            <a href="login.html" class="link">Login</a>
+            <a href="abuse.html" class="link">AbuseIPDB</a>
+            <a href="virus.html" class="link">VirusTotal</a>
+            <a href="both.html" class="link">AbuseIPDB & VirusTotal</a>
+            <a href="index.html" class="link">LogOut</a>
         </div>
     </div>
 
@@ -111,6 +111,39 @@
         <p>&copy; 2025 Nexulean | All Rights Reserved</p>
         <p>Contact us: <a href="mailto:nexulaen@gmail.com">nexulean@gmail.com</a></p>
     </div>
+
+    <script>
+        // Simulate connection checks and security protocols
+        function checkUserConnection() {
+            // In a real scenario, you should check user behavior using server-side logic
+            // Simulate checking for DDoS/abnormal access patterns
+            const userIP = 'user_ip_here'; // Typically you would get this from the server-side
+            const currentURL = window.location.href;
+
+            // Basic protection against path traversal or unauthorized access
+            if (currentURL.includes('/../')) {
+                window.location.href = "error.html"; // Redirect to error if suspicious path traversal
+            }
+
+            // Simulate checking connection and user's access pattern (e.g., rate limiting or IP blocking)
+            const suspiciousIP = ['malicious_ip_here']; // List of malicious IPs (to be managed on server-side)
+            if (suspiciousIP.includes(userIP)) {
+                document.body.innerHTML = "<div class='blocked'>Your IP has been blocked due to suspicious activity.</div>";
+                return; // Stop further execution for malicious users
+            }
+
+            // If user is not authenticated (check using a session or Firebase auth state)
+            const isAuthenticated = true; // Replace with real authentication check (e.g., Firebase auth)
+            if (!isAuthenticated) {
+                window.location.href = 'login.html'; // Redirect to login if not authenticated
+            }
+        }
+
+        // Run the security checks when the page is loaded
+        window.onload = checkUserConnection;
+
+    </script>
+    
 
 </body>
 </html>
