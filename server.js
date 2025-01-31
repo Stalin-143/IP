@@ -8,8 +8,13 @@ const PORT = 3000;
 // Enable CORS
 app.use(cors());
 
-// Serve static files (for frontend)
+// Serve static files (for assets like CSS, JS, images) from the 'public' folder
 app.use(express.static(path.join(__dirname, "public")));
+
+// Serve the index.html file located outside the 'public' folder
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "index.html"));
+});
 
 // Validate IP address format using a regex pattern
 const isValidIP = (ip) => {
